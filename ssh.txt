@@ -1,0 +1,4 @@
+>>> from main2 import File_manager
+>>> aaa = File_manager('data')
+>>> aaa.get_fullpath('dirst')
+'data/dirst'
