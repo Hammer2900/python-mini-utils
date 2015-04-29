@@ -54,6 +54,7 @@ class Apt_runer(object):
                      'Install package': 'Install' ,
                      'Purge package': 'Uninstall' ,
                      'Add repository':'AddRepo',
+                     'Install Reppo': 'Iinstallrepo',
                      'Menu': ['Update',
                               'Upgrade',
                               'Clean Cash',
@@ -61,7 +62,8 @@ class Apt_runer(object):
                               '-f install',
                               'Install',
                               'Uninstall',
-                              'AddRepo'] }
+                              'AddRepo',
+                              'Iinstallrepo'] }
         self.run()
 
     def choise_execute(self):
@@ -91,6 +93,12 @@ class Apt_runer(object):
 
         elif otvet == self.MENU['Add repository']:
             self.apt_manager.exe_apt_add_repository(terminal=self.TERM, repo=self.gui_manager.enterebox(message='Имя репозитория'))
+
+        elif otvet == self.MENU['Install Reppo']:
+            repo, proc = self.gui_manager.multenterbox(message='Установить программу из репозитория',dictfiles=['Repozitory','Name app'], values=['', ''])
+            self.apt_manager.exe_apt_add_repository(terminal=self.TERM, repo=repo)
+            self.apt_manager.exe_apt_update(self.TERM)
+            self.apt_manager.exe_apt_install(terminal=self.TERM, prog=proc)
 
     def run(self):
         self.choise_execute()
