@@ -40,6 +40,7 @@ class Gui_manager(object):
         self.MENUS = {'Login ssh to pass':'ssh',
                       'Login ssh to key':'ssh-key',
                       'Mount sftp share':'sftp',
+                      'Port forward':'port_forwarding',
                       'Add config':'add config',
                       'Edit config':'edit config',
                       'Unmount all conf shares':'unmount all',
@@ -47,6 +48,7 @@ class Gui_manager(object):
                       'Menu': ['ssh',
                                'ssh-key',
                                'sftp',
+                               'port_forwarding',
                                'add config',
                                'edit config',
                                'unmount all',
@@ -76,6 +78,9 @@ class Gui_manager(object):
     def show_create_dialog(self):
         return self.multenterbox(message=u"Создание", dictfiles=['Name', 'Server', 'Login', 'Password', 'Port'], values=['Name', '', '', '', '22'])
 
+    def show_port_forward_dialog(self):
+        return self.multenterbox(message=u"Проброс порта", dictfiles=['LocalPort','RemotePort'], values=['8888','27017'])
+
     def show_edit_dialog(self, values):
         return self.multenterbox(message=u"Редактирование", dictfiles=['Name', 'Server', 'Login', 'Password', 'Port'], values=values)
 
@@ -91,6 +96,7 @@ class Cmd_manager(object):
     def __init__(self):
         self.EXE = "{terminal} -e 'bash -c \"sshpass -p '{password}' ssh -o StrictHostKeyChecking=no {login}@{server} -p {port}; exec bash\"'"
         self.EXE_SFTP = "{terminal} -e 'bash -c \"ssh {login}@{server} -p {port}; exec bash\"'"
+        self.PORT_FORWARD = "{terminal} -e 'bash -c \"ssh -N -p 22 {login}@{server} -L {localport}:localhost:{remoteport}; exec bash\"'"
         self.SFTP = "sshfs {login}@{server}:/ -p {port} -o nonempty {dirpath}"
         self.UNMOUNT = "fusermount -u {dir}"
         self.COPYKEY = "{terminal} -e 'bash -c \"scp -P {port} '{key}' {login}@{server}:/; exec bash\"'"
@@ -107,6 +113,9 @@ class Cmd_manager(object):
 
     def exe_mount_sftp(self, server, login, password, port, dirpath):
         self.cmd(self.SFTP.format(login=login, server=server, port=port, dirpath=dirpath))
+
+    def exe_port_forward(self, terminal, server, login, localport, remoteport):
+        self.cmd(self.PORT_FORWARD.format(terminal=terminal, server=server, login=login, localport=localport, remoteport=remoteport))
 
     def choise_key(self, terminal, server, login, port, key_file):
         self.cmd(self.COPYKEY.format(terminal=terminal, login=login, server=server, port=port, key=key_file))
@@ -153,6 +162,12 @@ class Ssh_conector(object):
             edit = self.gui_manager.show_dir_project(self.file_manager.finde_all())
             self.SLOVARIK = self.file_manager.load_config(edit)
             self.cmd_manager.exe_mount_sftp(self.SLOVARIK['SERVER'], self.SLOVARIK['LOGIN'],self.SLOVARIK['PASS'], self.SLOVARIK['PORT'],self.file_manager.mount_dir(edit))
+
+        elif otvet == self.gui_manager.MENUS['Port forward']:
+            server = self.gui_manager.show_dir_project(self.file_manager.finde_all())
+            self.SLOVARIK = self.file_manager.load_config(server)
+            port = self.gui_manager.show_port_forward_dialog()
+            self.cmd_manager.exe_port_forward(self.TERM, self.SLOVARIK['SERVER'], self.SLOVARIK['LOGIN'], port[0], port[1])
 
         elif otvet == self.gui_manager.MENUS['Add config']:
             create = self.gui_manager.show_create_dialog()
