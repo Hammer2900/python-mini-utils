@@ -4,6 +4,29 @@ import os , sys
 from sys import platform as _platform
 import shutil
 
+class FilesMove(object):
+    def __index__(self, argvs):
+        self.argvs = argvs
+        self.prefix = ''
+        self.set_os_prefix()
+
+        self.NEWNAME = "((--{name}--))"
+
+    def set_os_prefix(self):
+        if _platform == "linux" or _platform == "linux2":
+            self.prefix = "/"
+        elif _platform == "win32":
+            self.prefix = "\\"
+
+    def move_files(self):
+        pass
+
+    def check_dir(self):
+        pass
+
+    def check_argvs(self):
+        pass
+
 prefix = ""
 
 if _platform == "linux" or _platform == "linux2":
