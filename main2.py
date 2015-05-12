@@ -96,7 +96,7 @@ class Cmd_manager(object):
     def __init__(self):
         self.EXE = "{terminal} -e 'bash -c \"sshpass -p '{password}' ssh -o StrictHostKeyChecking=no {login}@{server} -p {port}; exec bash\"'"
         self.EXE_SFTP = "{terminal} -e 'bash -c \"ssh {login}@{server} -p {port}; exec bash\"'"
-        self.PORT_FORWARD = "{terminal} -e 'bash -c \"ssh -N -p 22 {login}@{server} -L {localport}:localhost:{remoteport}; exec bash\"'"
+        self.PORT_FORWARD = "{terminal} -e 'bash -c \"echo \"localport:{echolocal}\ remoteport:{echoremote}\" && ssh -N -p 22 {login}@{server} -L {localport}:localhost:{remoteport}; exec bash\"'"
         self.SFTP = "sshfs {login}@{server}:/ -p {port} -o nonempty {dirpath}"
         self.UNMOUNT = "fusermount -u {dir}"
         self.COPYKEY = "{terminal} -e 'bash -c \"scp -P {port} '{key}' {login}@{server}:/; exec bash\"'"
@@ -115,7 +115,15 @@ class Cmd_manager(object):
         self.cmd(self.SFTP.format(login=login, server=server, port=port, dirpath=dirpath))
 
     def exe_port_forward(self, terminal, server, login, localport, remoteport):
-        self.cmd(self.PORT_FORWARD.format(terminal=terminal, server=server, login=login, localport=localport, remoteport=remoteport))
+        self.cmd(self.PORT_FORWARD.format(
+            terminal=terminal,
+            server=server,
+            login=login,
+            localport=localport,
+            remoteport=remoteport,
+            echolocal=localport,
+            echoremote=remoteport)
+        )
 
     def choise_key(self, terminal, server, login, port, key_file):
         self.cmd(self.COPYKEY.format(terminal=terminal, login=login, server=server, port=port, key=key_file))
