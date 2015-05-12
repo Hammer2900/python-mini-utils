@@ -11,8 +11,10 @@ class File_manager(object):
 
     def __init__(self, main_dir):
         self.MAIN_DIR = main_dir
+        self.MNT_MAIN = expanduser("~/mnt/")
         self.ALL_PR_DIR = self.finde_all()
-        self.MNT_DIR = expanduser("~/mnt/{names}")
+        self.MNT_DIR = self.MNT_MAIN + "{names}"
+        self.check_dirs()
 
     def get_fullpath(self, name):
         return "{path}/{name}".format(path=self.MAIN_DIR, name=name)
@@ -27,11 +29,18 @@ class File_manager(object):
         return [f for f in os.listdir(self.MAIN_DIR)]
 
     def mount_dir(self, name):
-        if os.path.exists(self.MNT_DIR.format(names=name)):
+        return self.exsist_dir(self.MNT_DIR.format(names=name))
+
+    def check_dirs(self):
+        self.exsist_dir(self.MAIN_DIR)
+        self.exsist_dir(self.MNT_MAIN)
+
+    def exsist_dir(self, name):
+        if os.path.exists(name):
             pass
         else:
-            os.mkdir(self.MNT_DIR.format(names=name))
-        return self.MNT_DIR.format(names=name)
+            os.mkdir(name)
+        return name
 
 class Gui_manager(object):
 
