@@ -12,9 +12,9 @@ class File_manager(object):
     def __init__(self, main_dir):
         self.MAIN_DIR = main_dir
         self.MNT_MAIN = expanduser("~/mnt/")
+        self.check_dirs()
         self.ALL_PR_DIR = self.finde_all()
         self.MNT_DIR = self.MNT_MAIN + "{names}"
-        self.check_dirs()
 
     def get_fullpath(self, name):
         return "{path}/{name}".format(path=self.MAIN_DIR, name=name)
