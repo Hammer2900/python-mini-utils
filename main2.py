@@ -76,13 +76,25 @@ class Gui_manager(object):
         return self.buttonbox(message=u"Действия", dictfiles=dictionary)
 
     def show_create_dialog(self):
-        return self.multenterbox(message=u"Создание", dictfiles=['Name', 'Server', 'Login', 'Password', 'Port'], values=['Name', '', '', '', '22'])
+        return self.multenterbox(message=u"Создание", dictfiles=[
+            'Name',
+            'Server',
+            'Login',
+            'Password',
+            'Port'
+        ], values=['Name', '', '', '', '22'])
 
     def show_port_forward_dialog(self):
         return self.multenterbox(message=u"Проброс порта", dictfiles=['LocalPort','RemotePort'], values=['8888','27017'])
 
     def show_edit_dialog(self, values):
-        return self.multenterbox(message=u"Редактирование", dictfiles=['Name', 'Server', 'Login', 'Password', 'Port'], values=values)
+        return self.multenterbox(message=u"Редактирование", dictfiles=[
+            'Name',
+            'Server',
+            'Login',
+            'Password',
+            'Port'
+        ], values=values)
 
     def show_dir_project(self, list_all_proj):
         return self.choisebox(u"Выберите проект", list_all_proj)
@@ -159,23 +171,46 @@ class Ssh_conector(object):
         if otvet == self.gui_manager.MENUS['Login ssh to pass']:
             edit = self.gui_manager.show_dir_project(self.file_manager.finde_all())
             self.SLOVARIK = self.file_manager.load_config(edit)
-            self.cmd_manager.exe_term_ssh(self.TERM, self.SLOVARIK['SERVER'], self.SLOVARIK['LOGIN'], self.SLOVARIK['PASS'], self.SLOVARIK['PORT'])
+            self.cmd_manager.exe_term_ssh(
+                self.TERM,
+                self.SLOVARIK['SERVER'],
+                self.SLOVARIK['LOGIN'],
+                self.SLOVARIK['PASS'],
+                self.SLOVARIK['PORT']
+            )
 
         elif otvet == self.gui_manager.MENUS['Login ssh to key']:
             edit = self.gui_manager.show_dir_project(self.file_manager.finde_all())
             self.SLOVARIK = self.file_manager.load_config(edit)
-            self.cmd_manager.exe_term_ssh_key(self.TERM, self.SLOVARIK['SERVER'], self.SLOVARIK['LOGIN'], self.SLOVARIK['PORT'])
+            self.cmd_manager.exe_term_ssh_key(
+                self.TERM,
+                self.SLOVARIK['SERVER'],
+                self.SLOVARIK['LOGIN'],
+                self.SLOVARIK['PORT']
+            )
 
         elif otvet == self.gui_manager.MENUS['Mount sftp share']:
             edit = self.gui_manager.show_dir_project(self.file_manager.finde_all())
             self.SLOVARIK = self.file_manager.load_config(edit)
-            self.cmd_manager.exe_mount_sftp(self.SLOVARIK['SERVER'], self.SLOVARIK['LOGIN'],self.SLOVARIK['PASS'], self.SLOVARIK['PORT'],self.file_manager.mount_dir(edit))
+            self.cmd_manager.exe_mount_sftp(
+                self.SLOVARIK['SERVER'],
+                self.SLOVARIK['LOGIN'],
+                self.SLOVARIK['PASS'],
+                self.SLOVARIK['PORT'],
+                self.file_manager.mount_dir(edit)
+            )
 
         elif otvet == self.gui_manager.MENUS['Port forward']:
             server = self.gui_manager.show_dir_project(self.file_manager.finde_all())
             self.SLOVARIK = self.file_manager.load_config(server)
             port = self.gui_manager.show_port_forward_dialog()
-            self.cmd_manager.exe_port_forward(self.TERM, self.SLOVARIK['SERVER'], self.SLOVARIK['LOGIN'], port[0], port[1])
+            self.cmd_manager.exe_port_forward(
+                self.TERM,
+                self.SLOVARIK['SERVER'],
+                self.SLOVARIK['LOGIN'],
+                port[0],
+                port[1]
+            )
 
         elif otvet == self.gui_manager.MENUS['Add config']:
             create = self.gui_manager.show_create_dialog()
@@ -185,7 +220,12 @@ class Ssh_conector(object):
         elif otvet == self.gui_manager.MENUS['Edit config']:
             edit = self.gui_manager.show_dir_project(self.file_manager.finde_all())
             self.SLOVARIK = self.file_manager.load_config(edit)
-            edit2 = self.gui_manager.show_edit_dialog([edit,self.SLOVARIK['SERVER'],self.SLOVARIK['LOGIN'],self.SLOVARIK['PASS'],self.SLOVARIK['PORT']])
+            edit2 = self.gui_manager.show_edit_dialog(
+                [edit,self.SLOVARIK['SERVER'],
+                 self.SLOVARIK['LOGIN'],
+                 self.SLOVARIK['PASS'],
+                 self.SLOVARIK['PORT']]
+            )
             self.set_slovarik(edit2[1:])
             self.file_manager.save_config(edit2[0],self.SLOVARIK)
 
@@ -197,7 +237,12 @@ class Ssh_conector(object):
             self.SLOVARIK = self.file_manager.load_config(edit)
             filekey = self.gui_manager.show_choise_key()
             self.gui_manager.enterbox(message=u"Пароль", default=self.SLOVARIK['PASS'])
-            self.cmd_manager.choise_key(self.TERM, self.SLOVARIK['SERVER'], self.SLOVARIK['LOGIN'], self.SLOVARIK['PORT'], filekey)
+            self.cmd_manager.choise_key(
+                self.TERM,
+                self.SLOVARIK['SERVER'],
+                self.SLOVARIK['LOGIN'],
+                self.SLOVARIK['PORT'],
+                filekey)
 
     def run(self):
         self.choise_execute()
