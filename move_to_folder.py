@@ -44,7 +44,7 @@ class FilesMove(object):
         name, ext = self.make_name_ext(self.argvs)
 
     def check_argvs(self):
-        if len(self.argvs) > 1:
+        if len(self.argvs) > 0:
             self.main()
         else:
             print False
