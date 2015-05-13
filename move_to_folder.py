@@ -24,8 +24,8 @@ class FilesMove(object):
     def name_new_folder(self, name):
         return self.NEWNAME.format(name=name)
 
-    def move_files(self, names, path):
-        for _ in names:
+    def move_files(self, path):
+        for _ in self.argvs:
             shutil.move(_,path)
 
     def check_dir(self, folder):
@@ -42,6 +42,10 @@ class FilesMove(object):
 
     def main(self):
         name, ext = self.make_name_ext(self.argvs)
+        head, tail = self.make_head_tail(self.argvs)
+        new_path = self.PATHNEWFOLDER.format(head=head, prefix=self.prefix, newname=self.name_new_folder(name))
+        self.check_dir(new_path)
+        self.move_files(new_path)
 
     def check_argvs(self):
         if len(self.argvs) > 0:
@@ -49,25 +53,5 @@ class FilesMove(object):
         else:
             print False
 
-# prefix = ""
-#
-# if _platform == "linux" or _platform == "linux2":
-#     prefix = "/"
-# elif _platform == "win32":
-#     prefix = "\\"
-#
-# allfiles = sys.argv[1:]
-#
-# name , ext = os.path.splitext(os.path.basename(allfiles[0]))
-# print name, ext
-# head , tail = os.path.split(allfiles[0])
-# print head, tail
-# newname = "((--{name}--))".format(name=name)
-# if os.path.isdir(head+prefix+newname+prefix):
-#     pass
-# else:
-#     os.mkdir(head+prefix+newname+prefix)
-#     for lines in allfiles:
-#         shutil.move(lines,head+prefix+newname+prefix)
 if __name__ == '__main__':
     a = FilesMove()
