@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import json
 import os
+import distutils.spawn
 from os.path import expanduser
 import easygui as g
 
@@ -125,6 +126,9 @@ class Cmd_manager(object):
 
     def cmd(self, command):
         os.system(command)
+
+    def is_tool(name):
+        return distutils.spawn.find_executable(name) is not None
 
     def exe_term_ssh(self, terminal, server, login, password, port):
         self.cmd(self.EXE.format(terminal=terminal, password=password, login=login, server=server, port=port))
