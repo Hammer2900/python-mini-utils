@@ -127,7 +127,7 @@ class Cmd_manager(object):
     def cmd(self, command):
         os.system(command)
 
-    def is_tool(name):
+    def is_tool(self, name):
         return distutils.spawn.find_executable(name) is not None
 
     def exe_term_ssh(self, terminal, server, login, password, port):
