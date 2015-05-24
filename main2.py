@@ -97,6 +97,9 @@ class Gui_manager(object):
     def show_port_forward_dialog(self):
         return self.multenterbox(message=u"Проброс порта", dictfiles=['LocalPort','RemotePort'], values=['8888','27017'])
 
+    def show_url_counts_dialog(self):
+        return self.multenterbox(message=u"Проброс порта", dictfiles=['url','parts'], values=['','4'])
+
     def show_edit_dialog(self, values):
         return self.multenterbox(message=u"Редактирование", dictfiles=[
             'Name',
