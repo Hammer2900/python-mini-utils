@@ -10,7 +10,6 @@ from main2 import Gui_manager
 class Youtube_manager(Cmd_manager):
     def __init__(self):
         self.FFMPEG = 'ffmpeg -i \"{m4a}\" -ss {start} -to {end} -q:a 1 {outfolder}'
-        self.FOLDER_SAVE = expanduser("~/{name}.mp3")
 
     def ffmpeg_exist(self):
         return self.is_tool('ffmpeg')
@@ -35,12 +34,19 @@ class Youtube_manager(Cmd_manager):
 
 class Youtube_runer():
     def __init__(self):
-        self.git_manager = Youtube_manager()
-        self.gui_manager  = Gui_manager()
+        self.youtube_manager = Youtube_manager()
+        self.gui_manager = Gui_manager()
+        self.FOLDER_SAVE = expanduser("~/{name}.mp3")
+        self.TEMP_FILE = expanduser("~/{name}.m4a")
         self.run()
 
     def run(self):
-        print Youtube_manager().ffmpeg_exist()
+        vars = self.gui_manager.show_url_counts_dialog()
+        vars_teme = self.youtube_manager.download_youtube_m4a(vars[0],self.TEMP_FILE.format(name='tempy'))
+        pars_time = self.youtube_manager.parse_time(vars_teme[0])
+        sec = self.youtube_manager.show_time(pars_time[0],pars_time[1],pars_time[2])
+        for key,part in enumerate(self.youtube_manager.split_int(int(sec), int(vars[1]))):
+            self.youtube_manager.youtube_download(vars_teme[1],part[0],part[1],self.FOLDER_SAVE.format(name=key))
 
 if __name__ == '__main__':
     Youtube_runer()
