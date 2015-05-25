@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import pafy
-import os
-import time
+import re
 from os.path import expanduser
 from main2 import Cmd_manager
 from main2 import Gui_manager
@@ -13,6 +12,9 @@ class Youtube_manager(Cmd_manager):
 
     def ffmpeg_exist(self):
         return self.is_tool('ffmpeg')
+
+    def normalize_name(name):
+        return re.sub("\s+", '', name)
 
     def parse_time(self, time):
         return map(int, time.split(':'))
