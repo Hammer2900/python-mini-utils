@@ -3,17 +3,23 @@
 import pafy
 import re
 from os.path import expanduser
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 from main2 import Cmd_manager
 from main2 import Gui_manager
 
 class Youtube_manager(Cmd_manager):
     def __init__(self):
         self.FFMPEG = 'ffmpeg -i \"{m4a}\" -ss {start} -to {end} -q:a 1 {outfolder}'
+        self.namefile = ''
 
     def ffmpeg_exist(self):
         return self.is_tool('ffmpeg')
 
-    def normalize_name(name):
+    def normalize_name(self, name):
         return re.sub("\s+", '', name)
 
     def parse_time(self, time):
@@ -29,6 +35,7 @@ class Youtube_manager(Cmd_manager):
     def download_youtube_m4a(self, url, path, quiet=True):
         video = pafy.new(url)
         audiostreams = video.getbestaudio()
+        self.namefile = self.normalize_name(video.title)
         return (video.duration, audiostreams.download(filepath=path, quiet=quiet))
 
     def youtube_download(self, m4a, start, end, outfolder):
@@ -38,7 +45,7 @@ class Youtube_runer():
     def __init__(self):
         self.youtube_manager = Youtube_manager()
         self.gui_manager = Gui_manager()
-        self.FOLDER_SAVE = expanduser("~/{name}.mp3")
+        self.FOLDER_SAVE = expanduser("~/{name}-{key}.mp3")
         self.TEMP_FILE = expanduser("~/{name}.m4a")
         self.run()
 
@@ -48,7 +55,7 @@ class Youtube_runer():
         pars_time = self.youtube_manager.parse_time(vars_teme[0])
         sec = self.youtube_manager.show_time(pars_time[0],pars_time[1],pars_time[2])
         for key,part in enumerate(self.youtube_manager.split_int(int(sec), int(vars[1]))):
-            self.youtube_manager.youtube_download(vars_teme[1],part[0],part[1],self.FOLDER_SAVE.format(name=key))
+            self.youtube_manager.youtube_download(vars_teme[1],part[0],part[1],self.FOLDER_SAVE.format(name=self.youtube_manager.namefile, key=key))
 
 if __name__ == '__main__':
     Youtube_runer()
